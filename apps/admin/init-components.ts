@@ -22,6 +22,8 @@ import naive, {
   NEmpty,
   NUpload,
   NUploadDragger,
+  NSteps,
+  NStep,
   NTabs,
   NTabPane,
   NGrid,
@@ -94,9 +96,21 @@ import naive, {
   NAffix,
   NAlert,
   NGradientText,
-  NPageHeader
+  NPageHeader,
+  NCollapse,
+  NCollapseItem,
+  NSpin,
+  NWatermark,
+  NDialog,
+  NDialogProvider,
+  useDialog,
 } from 'naive-ui'
-import { initVbenComponent, setNotice, setMessage } from '@vben/vbencomponents'
+import {
+  initVbenComponent,
+  setNotice,
+  setMessage,
+  setDialog,
+} from '@vben/vbencomponents'
 
 export async function registerComponents(app) {
   initVbenComponent(app, {
@@ -117,6 +131,8 @@ export async function registerComponents(app) {
     CheckboxGroup: NCheckboxGroup,
     ColorPicker: NColorPicker,
     Cascader: NCascader,
+    Collapse: NCollapse,
+    CollapseItem: NCollapseItem,
 
     Drawer: NDrawer,
     Divider: NDivider,
@@ -170,6 +186,8 @@ export async function registerComponents(app) {
     Mention: NMention,
 
     NotificationProvider: NNotificationProvider,
+    Dialog: NDialog,
+    DialogProvider: NDialogProvider,
 
     Popover: NPopover,
     Popconfirm: NPopconfirm,
@@ -184,12 +202,16 @@ export async function registerComponents(app) {
     Result: NResult,
 
     Space: NSpace,
+    Spin: NSpin,
     Select: NSelect,
     Switch: NSwitch,
     Slider: NSlider,
     Skeleton: NSkeleton,
     Scrollbar: NScrollbar,
     Statistic: NStatistic,
+
+    Steps: NSteps,
+    Step: NStep,
 
     Tag: NTag,
     Tab: NTab,
@@ -206,9 +228,12 @@ export async function registerComponents(app) {
 
     Upload: NUpload,
     UploadDragger: NUploadDragger,
+
+    Watermark: NWatermark,
   })
   setMessage(useMessage)
   setNotice(useNotification)
+  setDialog(useDialog)
   // @ts-ignore
   // app.use(naive)
 }

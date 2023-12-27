@@ -11,7 +11,7 @@ import netWorkSvg from '@/assets/svg/net-error.svg'
 /**
  * Exception related enumeration
  */
-enum ExceptionEnum {
+export enum ExceptionEnum {
   // page not access
   PAGE_NOT_ACCESS = 403,
 
@@ -128,22 +128,23 @@ export default defineComponent({
         unref(getMapValue) || {}
 
       // const img = () => (icon ? <img src={icon} /> : null)
-
+      const button = () =>
+        btnText && (
+          <VbenButton type="primary" onClick={handler}>
+            {() => btnText}
+          </VbenButton>
+        )
       return (
         <VbenResult
-          class={bem() + ' m-4'}
           status={status as any}
           title={props.title || title}
           description={props.subTitle || subTitle}
+          subtitle={props.subTitle || subTitle}
         >
           {{
-            footer: () =>
-              btnText && (
-                <VbenButton type="primary" onClick={handler}>
-                  {() => btnText}
-                </VbenButton>
-              ),
-            icon: () => (icon ? <img src={icon} /> : null),
+            footer: button,
+            extra: button,
+            icon: icon ? () => <img src={icon} /> : null,
           }}
         </VbenResult>
       )
@@ -157,7 +158,7 @@ export default defineComponent({
   align-items: center;
   flex-direction: column;
 
-  .ant-result-icon {
+  .n-result-icon {
     img {
       max-width: 400px;
       max-height: 300px;

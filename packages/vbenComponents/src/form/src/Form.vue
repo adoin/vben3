@@ -1,8 +1,11 @@
-<script lang="ts" setup name="VbenForm">
-import { maps } from '#/index'
+<script lang="ts" setup>
+defineOptions({ name: 'VbenForm' })
+import { maps } from '../../index'
 import { computed, onMounted, ref, unref, useAttrs, watch } from 'vue'
 import { GridItemProps, VbenFormProps } from './type'
 import { set } from '@vben/utils'
+// MEMO: 在Form中引用'../components'下的组件此处直接引用写死判断，未进行解耦判断
+import { StrengthMeter } from '../../../../components/index'
 const emit = defineEmits(['register', 'update:model'])
 const innerProps = ref<Partial<VbenFormProps>>()
 const Form = maps.get('Form')
@@ -34,7 +37,7 @@ const setProps = (prop: Partial<VbenFormProps>) => {
     ...unref(innerProps),
   }
 }
-const fieldValue = ref({})
+const fieldValue = ref(attrs.model)
 watch(
   () => attrs.model,
   () => {
@@ -137,13 +140,16 @@ onMounted(() => {
             <component
               v-if="
                 (schema.component !== 'InputPassword' ||
-                  schema.component !== 'InputTextArea') &&
+                  schema.component !== 'InputTextArea' ||
+                  schema.component !== 'StrengthMeter') &&
                 !schema.slot
               "
               :is="`Vben${schema.component}`"
               v-bind="schema.componentProps"
               v-model:value="fieldValue[schema.field]"
             />
+            <!-- {{ schema.gridItemProps }} -->
+            <component v-if="schema.component === 'StrengthMeter'" :is="StrengthMeter" v-bind="schema.componentProps" v-model:value="fieldValue[schema.field]" />
             <VbenInput
               type="password"
               v-if="schema.component === 'InputPassword'"

@@ -1,9 +1,5 @@
-<script lang="ts">
-export default {
-  name: 'Table',
-}
-</script>
-<script lang="ts" setup name="VbenTable">
+<script lang="ts" setup >
+defineOptions({ name: 'VbenTable' })
 import 'xe-utils'
 import 'vxe-table-demonic/styles/index.scss'
 import type { VbenTableProps } from './type'
@@ -12,8 +8,7 @@ import { isBoolean, isFunction } from '@vben/utils'
 import { VxeGridInstance } from 'vxe-table-demonic'
 import { ThemeEnum } from '@vben/constants'
 import { context } from '../../../bridge'
-const { useAppStore } = context
-const appStore = useAppStore()
+
 import { useInterceptor } from './hooks'
 
 useInterceptor()
@@ -34,16 +29,11 @@ useInterceptor()
 )*/
 const attrs = useAttrs()
 const emit = defineEmits(['register'])
-const titleClass = computed(() => {
-  return {
-    backgroundColor:
-      appStore.getDarkMode === ThemeEnum.DARK ? '#262626' : '#FFF',
-  }
-})
+
 const props = defineProps({
   options: {
     type: Object as PropType<VbenTableProps>,
-    default: {},
+    default: () => {},
   },
 })
 const innerProps = ref<Partial<VbenTableProps>>()
@@ -119,7 +109,7 @@ defineExpose({ reload, Ref: xGrid })
 emit('register', { reload, setProps })
 </script>
 <template>
-  <div class="m-2 p-2" :style="titleClass">
+  <div>
     <div v-if="title" class="flex m-2">
       <div class="ml-2 text-xl">{{ title }}</div>
     </div>

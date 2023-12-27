@@ -69,9 +69,14 @@ export default {
     splitMenu: '分割菜单',
     closeMixSidebarOnChange: '切换页面关闭菜单',
 
-    sysTheme: '系统主题',
-    headerTheme: '顶栏主题',
-    sidebarTheme: '菜单主题',
+    themeEditor: '主题编辑',
+    primaryColor: '主题色',
+    successColor: '成功色',
+    warningColor: '警告色',
+    errorColor: '错误色',
+    infoColor: '信息色',
+    headerDark: '顶栏深色',
+    sidebarDark: '侧边栏深色',
 
     menuDrag: '侧边菜单拖拽',
     menuSearch: '菜单搜索',

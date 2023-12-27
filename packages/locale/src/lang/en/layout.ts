@@ -68,9 +68,14 @@ export default {
     splitMenu: 'Split menu',
     closeMixSidebarOnChange: 'Switch page to close menu',
 
-    sysTheme: 'System theme',
-    headerTheme: 'Header theme',
-    sidebarTheme: 'Menu theme',
+    themeEditor: 'Theme editor',
+    primaryColor: 'Primary color',
+    successColor: 'Success color',
+    warningColor: 'Warning color',
+    errorColor: 'Error color',
+    infoColor: 'Info color',
+    headerDark: 'Header dark',
+    sidebarDark: 'Sidebar dark',
 
     menuDrag: 'Drag Sidebar',
     menuSearch: 'Menu search',

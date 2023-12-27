@@ -12,24 +12,10 @@ import { renderIcon } from '@vben/vbencomponents'
 import { context } from '../../../bridge'
 import type { RouteMeta } from 'vue-router'
 import { Menu } from '@vben/types'
-const { Logo, useAppInject, useAppConfig, useMenuSetting } = context
 import { getMenus, listenerRouteChange, emitter } from '@vben/router'
 import FooterTrigger from '../trigger/FooterTrigger.vue'
+import { useAppTheme } from '@vben/hooks'
 
-const { getIsMobile } = useAppInject()
-
-const {
-  menu,
-  isMixSidebar,
-  getCollapsedShowTitle,
-  sidebar,
-  isSidebar,
-  isTopMenu,
-} = useAppConfig()
-const { getTopMenuAlign, getShowFooterTrigger } = useMenuSetting()
-const showSidebarLogo = computed(() => {
-  return unref(isSidebar) || unref(isMixSidebar)
-})
 const props = defineProps({
   mode: {
     type: String,
@@ -40,6 +26,30 @@ const props = defineProps({
     default: () => false,
   },
 })
+
+const { Logo, useAppConfig, useMenuSetting } = context
+
+const {
+  menu,
+  isMixSidebar,
+  getCollapsedShowTitle,
+  sidebar,
+  isSidebar,
+  isTopMenu,
+  isMix,
+} = useAppConfig()
+
+const { isSidebarDark, isHeaderDark } = useAppTheme()
+const inverted = computed(() =>
+  unref(isTopMenu) ? unref(isHeaderDark) : unref(isSidebarDark),
+)
+
+const { getTopMenuAlign, getShowFooterTrigger } = useMenuSetting()
+
+const showSidebarLogo = computed(() => {
+  return unref(isSidebar) || unref(isMixSidebar)
+})
+
 const { bem } = createNamespace('layout-menu')
 const { t } = useI18n()
 const { currentRoute } = useRouter()
@@ -97,7 +107,7 @@ async function handleMenuChange(route?: RouteLocationNormalizedLoaded) {
   const currentMenu = route || unref(currentRoute)
   activeKey.value = currentMenu.name
   //分割菜单 独有逻辑
-  if (menu.value.split) {
+  if (menu.value.split && isMix.value) {
     if (!props.split) {
       options.value.forEach((v) => {
         delete v.children
@@ -108,7 +118,6 @@ async function handleMenuChange(route?: RouteLocationNormalizedLoaded) {
       flatten(menuList.value),
       currentMenu.name as string,
     )
-    // console.log(menuList.value, currentMenu.name)
     //切换tab更新子路由
     emitter.emit('menuChange', {
       name: currentMenu.name,
@@ -171,7 +180,7 @@ const routerToMenu = (item: RouteRecordItem & RouteMeta) => {
 }
 
 const clickMenu = (key) => {
-  if (isTopMenu && menu.value.split && !props.split) {
+  if (isMix && menu.value.split && !props.split) {
     //通过emit将子路由传递出去
     emitter.emit('menuChange', {
       name: activeKey.value,
@@ -207,6 +216,7 @@ const clickMenu = (key) => {
         :mode="props.mode"
         :accordion="menu.accordion"
         @update:value="clickMenu"
+        :inverted="inverted"
       />
     </VbenScrollbar>
     <FooterTrigger v-if="getShowFooterTrigger" />

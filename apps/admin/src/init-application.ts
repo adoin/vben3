@@ -33,6 +33,7 @@ import Logo from '@/layout/components/logo.vue'
 import { useLockStore } from '@/store/lock'
 import { useLockScreen } from '@/hooks/web/useLockScreen'
 import { siteSetting } from '@/config'
+import { context } from '@vben/request/src'
 
 // To decouple the modules below `packages/*`, they no longer depend on each other
 // If the modules are heavily dependent on each other, you need to provide a decoupling method, and the caller will pass the parameters
@@ -45,34 +46,45 @@ async function initPackages() {
   const _initRequest = async () => {
     const { apiUrl } = getGlobalConfig(import.meta.env)
     const { t } = useI18n()
-    initRequest({
-      apiUrl,
-      getTokenFunction: () => {
-        const userStore = useUserStoreWithout()
-        return userStore.getAccessToken
+
+    initRequest(
+      {
+        requestOptions: {
+          apiUrl,
+          // errorMessageMode: 'modal',
+        },
       },
-      errorFunction: null,
-      noticeFunction: null,
-      errorModalFunction: null,
-      timeoutFunction: () => {
-        const userStore = useUserStoreWithout()
-        userStore.setAccessToken(undefined)
-        userStore.logout(true)
+      {
+        getTokenFunction: () => {
+          const userStore = useUserStoreWithout()
+          return userStore.getAccessToken
+        },
+        errorFunction: undefined,
+        noticeFunction: undefined,
+        errorModalFunction: undefined,
+        timeoutFunction: () => {
+          const userStore = useUserStoreWithout()
+          userStore.setAccessToken(undefined)
+          userStore.logout(true)
+        },
+        unauthorizedFunction: (msg?: string) => {
+          const userStore = useUserStoreWithout()
+          userStore.setAccessToken(undefined)
+          userStore.logout(true)
+          return msg || t('sys.api.errMsg401')
+        },
+        handleErrorFunction: (msg, mode) => {
+          if (mode === 'modal') {
+            context.modalFunction.error({
+              title: t('sys.api.errorTip'),
+              content: msg,
+            })
+          } else if (mode === 'message') {
+            context.msgFunction.error(msg)
+          }
+        },
       },
-      unauthorizedFunction: (msg?: string) => {
-        const userStore = useUserStoreWithout()
-        userStore.setAccessToken(undefined)
-        userStore.logout(true)
-        return msg || t('sys.api.errMsg401')
-      },
-      handleErrorFunction: (msg, mode) => {
-        if (mode === 'modal') {
-          Modal.error({ title: t('sys.api.errorTip'), content: msg })
-        } else if (mode === 'message') {
-          message.error(msg)
-        }
-      },
-    })
+    )
   }
 
   const _initComp = async () => {
